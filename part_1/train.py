@@ -30,10 +30,23 @@ def build_and_train_model(experiment_dir_path, embedding_dim, learning_rate, num
     context_emb = Embedding(vocabulary_size, embedding_dim)(context_inp)
     context_emb = Flatten()(context_emb)
 
+    extra_context_inp = Input(shape=(1,))
+    extra_context_emb = Embedding(vocabulary_size, embedding_dim)(context_inp)
+    extra_context_emb = Flatten()(context_emb)
+
+    extra_context2_inp = Input(shape=(1,))
+    extra_context2_emb = Embedding(vocabulary_size, embedding_dim)(context_inp)
+    extra_context2_emb = Flatten()(context_emb)
+
     x = Dot(axes=1)([target_emb, context_emb])
     x = Dense(1, activation="sigmoid")(x)
 
+
+    new = Dot(axes=1)([extra_context_emb, extra_context2_emb])
+    new = Dense(1, activation="sigmoid")(x)
+
     model = Model([target_inp, context_inp], x)
+    model.add(new)
     print(model.summary())
 
     # compile model
