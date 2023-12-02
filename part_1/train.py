@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+# @source https://github.com/vrjkmr/song2vec/tree/master/src
 import numpy as np
 import tensorflow
 from tensorflow.keras.models import Model
