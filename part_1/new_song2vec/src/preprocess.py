@@ -10,12 +10,15 @@ def preprocess_data(experiment_dir_path, window_size, random_seed=42):
 
     # load dataframe
     filename = experiment_dir_path + "/data/combined_dataset.csv"
-    dataframe = pd.read_csv(filename, sep="\t", index_col=0)
+    dataframe = pd.read_csv(filename, index_col=0)
 
     # separate track names by playlist
     print('COLS')
     print(dataframe.columns)
-    unique_playlists = dataframe["artist_name"].unique() # changing playlist_name to artist_name
+    # print(type(dataframe.all_data))
+    print(type(dataframe.all_data[0]))
+    print(dataframe.all_data[0][0])
+    unique_playlists = dataframe['all_data']["artist_name"].unique() # changing playlist_name to artist_name
     print("# unique playlists: {count}".format(count=len(unique_playlists)))
     tracks_by_playlist = []
     for playlist in unique_playlists:

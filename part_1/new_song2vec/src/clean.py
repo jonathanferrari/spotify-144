@@ -17,30 +17,31 @@ def clean_raw_data(experiment_dir_path, csv_filepath, num_rows, num_batches=4):
         # print(row.shape)
         # print(row['all_data'])
         # print(row['all_data'].split(','))
-        print(row)
-        row.to_csv('jessregex.csv')
-        a, artist_name, track_name, uri, num_listens, danceability, energy, key, loudness, mode, speechiness, acousticness, instrumentalness, liveness, valence, tempo, song_type, song_id, track_href, analysis_url, duration_ms, time_signature =  row["all_data"].split(",")
-        row['artist_name'] = artist_name
-        row['track_name'] = track_name
-        row['uri'] = uri
-        row['num_listens'] = num_listens
-        row['danceability'] = danceability
-        row['energy'] = energy
-        row['key'] = key
-        row['loudness'] = loudness
-        row['mode'] = mode
-        row['speechiness'] = speechiness
-        row['acousticness'] = acousticness
-        row['instrumentalness'] = instrumentalness
-        row['liveness'] = liveness
-        row['valence'] = valence
-        row['tempo'] = tempo
-        row['song_type'] = song_type
-        row['song_id'] = song_id
-        row['track_href'] = track_href
-        row['analysis_url'] = analysis_url
-        row['duration_ms'] = duration_ms
-        row['time_signature'] = time_signature
+        # print(row)
+        # print(type(row))
+        # row.to_csv('jessregex.csv')
+        # a, artist_name, track_name, uri, num_listens, danceability, energy, key, loudness, mode, speechiness, acousticness, instrumentalness, liveness, valence, tempo, song_type, song_id, track_href, analysis_url, duration_ms, time_signature =  row["all_data"].split(",")
+        # row['artist_name'] = artist_name
+        # row['track_name'] = track_name
+        # row['uri'] = uri
+        # row['num_listens'] = num_listens
+        # row['danceability'] = danceability
+        # row['energy'] = energy
+        # row['key'] = key
+        # row['loudness'] = loudness
+        # row['mode'] = mode
+        # row['speechiness'] = speechiness
+        # row['acousticness'] = acousticness
+        # row['instrumentalness'] = instrumentalness
+        # row['liveness'] = liveness
+        # row['valence'] = valence
+        # row['tempo'] = tempo
+        # row['song_type'] = song_type
+        # row['song_id'] = song_id
+        # row['track_href'] = track_href
+        # row['analysis_url'] = analysis_url
+        # row['duration_ms'] = duration_ms
+        # row['time_signature'] = time_signature
 
 
         # user_id, track = row["all_data"].split(",", 1)
@@ -51,8 +52,8 @@ def clean_raw_data(experiment_dir_path, csv_filepath, num_rows, num_batches=4):
         # row["track_name"] = track_name.lower()
         # row["playlist_name"] = playlist_name.lower()
         # # row["track_full_name"] = str(row["artist_name"]) + " - " + str(row["track_name"])
-        row = row.drop("all_data")
-        print('works')
+        # row = row.drop("all_data")
+        # print('works')
         # row.to_csv('jessregex.csv')
 
         return row
