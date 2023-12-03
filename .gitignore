@@ -161,3 +161,6 @@ cython_debug/
 
 # ignore .DS_Store files on macOS in any file
 **/.DS_Store
+
+# jess is adding this to ignore the venv
+venv
