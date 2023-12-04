@@ -8,7 +8,7 @@ from src.utils import initialize_experiment_directory, write_hyperparameters, cr
 # build argument parser
 parser = argparse.ArgumentParser()
 parser.add_argument("experiment_name", help="name of experiment")
-parser.add_argument("--csv_path", help="path to raw .csv dataset (defaults to raw_data/spotify_playlists.csv)", default="raw_data/spotify_playlists.csv")
+parser.add_argument("--tsv_path", help="path to raw .tsv dataset (defaults to raw_data/spotify_playlists.tsv)", default="raw_data/spotify_playlists.tsv")
 parser.add_argument("-nr", "--num_rows", type=int, help="number of rows to extract (-1 for whole dataset) (defaults to 10000)", default=10000)
 parser.add_argument("-wsz", "--window_size", type=int, help="(half) window size for skip-gram contexts (defaults to 2)", default=2)
 parser.add_argument("-emb", "--embedding_dim", type=int, help="word2vec embedding dimension size (defaults to 100)", default=100)
@@ -25,7 +25,7 @@ initialize_experiment_directory(experiment_dir_name)
 write_hyperparameters(args, experiment_dir_name, verbose=True)
 
 # clean raw data
-clean_raw_data(experiment_dir_name, args.csv_path, args.num_rows)
+clean_raw_data(experiment_dir_name, args.tsv_path, args.num_rows)
 
 # preprocess dataset
 preprocess_data(experiment_dir_name, args.window_size, args.random_seed)
