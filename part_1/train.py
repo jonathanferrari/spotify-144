@@ -32,11 +32,11 @@ def build_and_train_model(experiment_dir_path, embedding_dim, learning_rate, num
     context_emb = Flatten()(context_emb)
 
     extra_context_inp = Input(shape=(1,))
-    extra_context_emb = Embedding(vocabulary_size, embedding_dim)(context_inp)
+    extra_context_emb = Embedding(vocabulary_size, embedding_dim)(extra_context_inp)
     extra_context_emb = Flatten()(context_emb)
 
     extra_context2_inp = Input(shape=(1,))
-    extra_context2_emb = Embedding(vocabulary_size, embedding_dim)(context_inp)
+    extra_context2_emb = Embedding(vocabulary_size, embedding_dim)(extra_context2_inp)
     extra_context2_emb = Flatten()(context_emb)
 
     x = Dot(axes=1)([target_emb, context_emb])

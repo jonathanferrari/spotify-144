@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 import numpy as np
 import tensorflow
-from tensorflow.keras.models import Model
+from tensorflow.keras.models import Model, Sequential
 from tensorflow.keras.layers import Input, Embedding, Flatten, Dot, Dense
 from tensorflow.keras.optimizers import Adam
 import pickle
@@ -30,10 +30,35 @@ def build_and_train_model(experiment_dir_path, embedding_dim, learning_rate, num
     context_emb = Embedding(vocabulary_size, embedding_dim)(context_inp)
     context_emb = Flatten()(context_emb)
 
+    extra_context_inp = Input(shape=(1,))
+    extra_context_emb = Embedding(vocabulary_size, embedding_dim)(extra_context_inp)
+    extra_context_emb = Flatten()(context_emb)
+
+    extra_context2_inp = Input(shape=(1,))
+    extra_context2_emb = Embedding(vocabulary_size, embedding_dim)(extra_context2_inp)
+    extra_context2_emb = Flatten()(context_emb)
+
     x = Dot(axes=1)([target_emb, context_emb])
     x = Dense(1, activation="sigmoid")(x)
 
-    model = Model([target_inp, context_inp], x)
+    new = Dot(axes=1)([context_emb, extra_context2_emb])
+    # new = Dot(axes=1)([new, extra_context_emb])
+    new = Dense(1, activation="sigmoid")(new)
+
+    # model = Model([target_inp, context_inp], x) #original
+    # model.add([extra_context_inp, extra_context2_inp], new)
+
+    # model = Sequential()
+    # modela = Model([target_inp, context_inp], x)
+    # modelb = Model([extra_context_inp, extra_context2_inp], new)
+    # model.add([target_inp, context_inp], x)
+    # model.add(modela)
+    # model.add(modelb)
+    # model = Model(inputs=[target_inp, context_inp], outputs=[x, x]) # this worked but idk what its doing
+    # model = Model(inputs=[context_inp, extra_context2_inp, extra_context_inp], outputs=new)
+    model = Model(inputs=[target_inp, context_inp, extra_context2_inp], outputs=[x, new])
+
+
     print(model.summary())
 
     # compile model
