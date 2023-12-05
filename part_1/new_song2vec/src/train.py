@@ -60,7 +60,7 @@ def build_and_train_model(experiment_dir_path, embedding_dim, learning_rate, num
         if epoch < 10:
             return lr
         else:
-            return lr * tf.math.exp(-0.1)
+            return lr * tensorflow.math.exp(-0.1)
 
     # Callback for learning rate adjustment
     callback = LearningRateScheduler(scheduler)
