@@ -1,0 +1,9 @@
+{
+    "experiment_name": "test_06",
+    "num_rows": 10000,
+    "window_size": 2,
+    "embedding_dim": 100,
+    "epochs": 6,
+    "learning_rate": 0.001,
+    "random_seed": 42
+}
