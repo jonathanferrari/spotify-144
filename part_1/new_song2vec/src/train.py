@@ -1,9 +1,12 @@
 # -*- coding: utf-8 -*-
 import numpy as np
 import tensorflow
-from tensorflow.keras.models import Model, Sequential
-from tensorflow.keras.layers import Input, Embedding, Flatten, Dot, Dense
-from tensorflow.keras.optimizers import Adam
+from keras.models import Model, Sequential
+from keras.layers import *
+from keras.optimizers import Adam
+from keras.regularizers import l2
+from keras.callbacks import LearningRateScheduler
+
 import pickle
 
 # training function
@@ -13,6 +16,8 @@ def build_and_train_model(experiment_dir_path, embedding_dim, learning_rate, num
     tokenizer = pickle.load(open(experiment_dir_path + "/data/tokenizer.pkl", "rb"))
     track2idx = tokenizer.word_index
     vocabulary_size = len(track2idx) + 1
+    dropout_rate = 0.2
+    regularization_rate = 0.01
 
     # load training data
     X = pickle.load(open(experiment_dir_path + "/data/X.pkl", "rb"))
@@ -21,50 +26,47 @@ def build_and_train_model(experiment_dir_path, embedding_dim, learning_rate, num
     # set seed
     tensorflow.random.set_seed(random_seed)
 
-    # build model architecture
-    target_inp = Input(shape=(1,)) 
-    target_emb = Embedding(vocabulary_size, embedding_dim)(target_inp)
+    # Define two inputs
+    target_inp = Input(shape=(1,))
+    context_inp = Input(shape=(1,))
+
+    # Shared embedding layer
+    # To use pre-trained embeddings, load them here and set weights=pretrained_weights, trainable=False
+    embedding = Embedding(vocabulary_size, embedding_dim)
+
+    # Target and context branches
+    target_emb = embedding(target_inp)
     target_emb = Flatten()(target_emb)
 
-    context_inp = Input(shape=(1,))
-    context_emb = Embedding(vocabulary_size, embedding_dim)(context_inp)
+    context_emb = embedding(context_inp)
     context_emb = Flatten()(context_emb)
 
-    # extra_context_inp = Input(shape=(1,))
-    # extra_context_emb = Embedding(vocabulary_size, embedding_dim)(extra_context_inp)
-    # extra_context_emb = Flatten()(context_emb)
+    # Combine the outputs of the two branches
+    combined = concatenate([target_emb, context_emb])
 
-    # extra_context2_inp = Input(shape=(1,))
-    # extra_context2_emb = Embedding(vocabulary_size, embedding_dim)(extra_context2_inp)
-    # extra_context2_emb = Flatten()(context_emb)
+    # Add dense and output layers
+    x = Dense(128, activation='relu', kernel_regularizer=l2(regularization_rate))(combined)  # Increased neurons and added L2 regularization
+    x = Dropout(dropout_rate)(x)
+    x = Dense(1, activation='sigmoid')(x)
 
-    x = Dot(axes=1)([target_emb, context_emb])
-    x = Dense(1, activation="sigmoid")(x)
+    # Create model
+    model = Model(inputs=[target_inp, context_inp], outputs=x)
 
-    # new = Dot(axes=1)([context_emb, extra_context2_emb])
-    # new = Dot(axes=1)([new, extra_context_emb])
-    # new = Dense(1, activation="sigmoid")(new)
+    # Compile the model with additional metrics
+    model.compile(optimizer='adam', loss='binary_crossentropy', metrics=['accuracy'])
 
-    model = Model([target_inp, context_inp], x) #original
-    # model.add([extra_context_inp, extra_context2_inp], new)
+    # Learning rate scheduler function
+    def scheduler(epoch, lr):
+        if epoch < 10:
+            return lr
+        else:
+            return lr * tf.math.exp(-0.1)
 
-    # model = Sequential()
-    # modela = Model([target_inp, context_inp], x)
-    # modelb = Model([extra_context_inp, extra_context2_inp], new)
-    # model.add([target_inp, context_inp], x)
-    # model.add(modela)
-    # model.add(modelb)
-    # model = Model(inputs=[target_inp, context_inp], outputs=[x, x]) # this worked but idk what its doing
-    # model = Model(inputs=[context_inp, extra_context2_inp, extra_context_inp], outputs=new)
-    # model = Model(inputs=[target_inp, context_inp, extra_context2_inp], outputs=[x, new])
+    # Callback for learning rate adjustment
+    callback = LearningRateScheduler(scheduler)
 
-
+    # Model summary
     print(model.summary())
-
-    # compile model
-    optimizer = Adam(learning_rate=learning_rate)
-    loss = "binary_crossentropy"
-    model.compile(optimizer=optimizer, loss=loss)
 
     # use gpu if available
     device_config = "/CPU:0"
@@ -74,7 +76,7 @@ def build_and_train_model(experiment_dir_path, embedding_dim, learning_rate, num
 
     # fit model
     with tensorflow.device(device_config):
-        r = model.fit(X, y, epochs=num_epochs)
+        r = model.fit(X, y, epochs=num_epochs, callbacks=[callback])
 
     # store model
     filepath = experiment_dir_path + "/model"
