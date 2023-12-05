@@ -45,7 +45,7 @@ def build_and_train_model(experiment_dir_path, embedding_dim, learning_rate, num
     combined = concatenate([target_emb, context_emb])
 
     # Add dense and output layers
-    x = Dense(128, activation='relu', kernel_regularizer=l2(regularization_rate))(combined)  # Increased neurons and added L2 regularization
+    x = Dense(512, activation='relu', kernel_regularizer=l2(regularization_rate))(combined)
     x = Dropout(dropout_rate)(x)
     x = Dense(1, activation='sigmoid')(x)
 
