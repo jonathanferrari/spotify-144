@@ -2,6 +2,7 @@ import streamlit as st
 import pandas as pd
 import numpy as np
 import utils
+import time
 
 # https://docs.streamlit.io/library/api-reference/widgets
 # https://docs.streamlit.io/library/api-reference/layout
@@ -15,15 +16,16 @@ st.divider()
 data = pd.read_csv("part_1/new_song2vec/raw_data/spotify_playlists.tsv", sep="\t")
 songs = data["track_name"].unique()
 
+st.markdown("## Song and Artist Selection")
 song_name = st.selectbox("Select a song", songs)
 
 is_unique = utils.is_unique_song_name(data, song_name)
 if is_unique:
     artist = data[data["track_name"] == song_name]["artist_name"].iloc[0]
-    st.write(f"Artist: {artist}")
 else:
     possible_artists = data[data["track_name"] == song_name]["artist_name"].unique()
     artist = st.selectbox("Select an artist", possible_artists)
+
 
 playlist = utils.get_most_similar_tracks(song_name, artist)
 
@@ -34,7 +36,7 @@ playlist_length = 10
 max_length = float("inf")
 
 
-
+st.markdown("## Filters")
 dance_cont = st.container(border=True)
 with dance_cont:
     dance_filter_bool = st.checkbox("Filter by Danceability")
@@ -120,4 +122,11 @@ display_playlist = display_playlist[["track_name", "artist_name", "similarity", 
 configs = {
     "link" : st.column_config.LinkColumn("link to spotify")
 }
+
+st.markdown("### Seed Song")
+seed_uri = data[(data["track_name"] == song_name) & (data["artist_name"] == artist)]["uri"].iloc[0]
+seed_url = f"https://open.spotify.com/track/{seed_uri.split(':')[-1]}"
+st.markdown(f"Song: [{song_name}]({seed_url}) by {artist}")
+st.divider()
+st.markdown("### New Music")
 st.dataframe(display_playlist, width = 1000, hide_index=True, column_config = configs)
