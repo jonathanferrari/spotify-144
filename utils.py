@@ -14,7 +14,7 @@ def get_track_name(df, uri):
 def is_unique_song_name(df, track_name):
     return len(df[df["track_name"] == track_name]) == 1
 
-def get_most_similar_tracks(track_name, artist, n=1000, exp_name="test_10"):
+def get_most_similar_tracks(track_name, artist, n=7500, exp_name="test_10"):
     tokenizer = pickle.load(open(f"part_1/new_song2vec/experiments/{exp_name}/data/tokenizer.pkl", "rb"))
     embedding_weights = pickle.load(open(f"part_1/new_song2vec/experiments/{exp_name}/embeddings.pkl", "rb"))
     df = pd.read_csv('part_1/new_song2vec/raw_data/spotify_playlists.tsv', sep='\t', index_col=0)
