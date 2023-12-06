@@ -22,7 +22,7 @@ def preprocess_data(experiment_dir_path, window_size, random_seed=42):
     print("# unique playlists: {count}".format(count=len(unique_playlists)))
     tracks_by_playlist = []
     for playlist in unique_playlists:
-        tracks = dataframe[dataframe["Unnamed: 1"] == playlist]['Unnamed: 2'].tolist() #Unnamed: 1 is artist, Unnamed: 2 is song
+        tracks = dataframe[dataframe["Unnamed: 1"] == playlist]['Unnamed: 3'].tolist() #Unnamed: 1 is artist, Unnamed: 2 is song
         tracks_by_playlist.append(tracks)
 
     # tokenize track names
