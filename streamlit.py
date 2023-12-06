@@ -61,12 +61,6 @@ with length_cont:
     if length_filter_bool:
         playlist_length = st.slider("Playlist Length:", 5, 50, 10)
 
-time_cont = st.container(border=True)
-with time_cont:
-    time_filter_bool = st.checkbox("Filter by Time")
-    if time_filter_bool:
-        max_length = st.slider("Max Length (minutes):", 10, 120, 30)
-
 artist_cont = st.container(border=True)
 with artist_cont:
     artist_filter_bool = st.checkbox("Filter by artist")
@@ -106,17 +100,6 @@ if artist_filter_bool:
 
 
 playlist = playlist.head(playlist_length)
-
-if time_filter_bool:
-    empty_playlist = pd.DataFrame(columns=playlist.columns)
-    running_time = 0
-    for i, row in playlist.iterrows():
-        if running_time + row["duration_ms"] / 60000 <= max_length:
-            running_time += row["duration_ms"] / 60000
-            empty_playlist = empty_playlist.append(row)
-        else: 
-            break
-    playlist = empty_playlist
 
 
 display_playlist = pd.merge(playlist, data, on=["track_name", "artist_name"], how="left")
