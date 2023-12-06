@@ -9,7 +9,7 @@ from src.utils import initialize_experiment_directory, write_hyperparameters, cr
 parser = argparse.ArgumentParser()
 parser.add_argument("experiment_name", help="name of experiment")
 parser.add_argument("--tsv_path", help="path to raw .tsv dataset (defaults to raw_data/spotify_playlists.tsv)", default="raw_data/spotify_playlists.tsv")
-parser.add_argument("-nr", "--num_rows", type=int, help="number of rows to extract (-1 for whole dataset) (defaults to 10000)", default=10000)
+parser.add_argument("-nr", "--num_rows", type=int, help="number of rows to extract (-1 for whole dataset) (defaults to 10000)", default=-1)
 parser.add_argument("-wsz", "--window_size", type=int, help="(half) window size for skip-gram contexts (defaults to 2)", default=2)
 parser.add_argument("-emb", "--embedding_dim", type=int, help="word2vec embedding dimension size (defaults to 100)", default=100)
 parser.add_argument("-e", "--epochs", type=int, help="number of training epochs (defaults to 20)", default=20)
