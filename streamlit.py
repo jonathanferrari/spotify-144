@@ -8,7 +8,10 @@ import utils
 
 
 st.title('An App to Create Playlists')
+st.markdown("## Data 144, Fall 2023")
+st.markdown("> *By: Jonathan Ferrari, Jessica Golden, Ciara Acosta, Rahul Shah, Arman Kazmi, Abigail Yu, Sean Yang*")
 
+st.divider()
 data = pd.read_csv("part_1/new_song2vec/raw_data/spotify_playlists.tsv", sep="\t")
 songs = data["track_name"].unique()
 
@@ -108,5 +111,13 @@ if time_filter_bool:
             break
     playlist = empty_playlist
 
-display_playlist = playlist.reset_index(drop=True)[["track_name", "artist_name", "similarity"]]
-st.dataframe(display_playlist, width = 1000)
+
+display_playlist = pd.merge(playlist, data, on=["track_name", "artist_name"], how="left")
+# display_playlist = playlist.reset_index(drop=False)[["track_name", "artist_name", "similarity", "uri"]]
+display_playlist["link"] = display_playlist["uri"].apply(lambda x: f"https://open.spotify.com/track/{x.split(':')[-1]}")
+display_playlist = display_playlist[["track_name", "artist_name", "similarity", "link"]]
+
+configs = {
+    "link" : st.column_config.LinkColumn("link to spotify")
+}
+st.dataframe(display_playlist, width = 1000, hide_index=True, column_config = configs)
