@@ -2,6 +2,5 @@ altair
 numpy
 pandas
 streamlit
-keras
 tensorflow
 pickle
