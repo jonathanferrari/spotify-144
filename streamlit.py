@@ -95,10 +95,15 @@ if artist_filter_bool:
             artist_songs = artist_songs[:k]
             playlist = pd.concat([non_artist_songs, artist_songs]).sort_values("similarity", ascending=False)
         else:
-            temp_playlist = playlist.head(playlist_length)
-            if temp_playlist["artist_name"].isin([artist_to_filter]).sum() < k:
-                artist_songs = artist_songs[:k]
-                playlist = pd.concat([non_artist_songs, artist_songs]).sort_values("similarity", ascending=False)
+            artist_songs_selected = artist_songs.head(k)
+            if k >= playlist_length:
+                playlist = artist_songs_selected.head(playlist_length)
+            else:
+                remaining_playlist_length = playlist_length - k
+                non_artist_songs_selected = non_artist_songs.head(remaining_playlist_length)
+                playlist = pd.concat([artist_songs_selected, non_artist_songs_selected]).sort_values("similarity", ascending=False)
+
+
 
 playlist = playlist.head(playlist_length)
 
@@ -129,4 +134,4 @@ seed_url = f"https://open.spotify.com/track/{seed_uri.split(':')[-1]}"
 st.markdown(f"Song: [{song_name}]({seed_url}) by {artist}")
 st.divider()
 st.markdown("### New Music")
-st.dataframe(display_playlist, width = 1000, hide_index=True, column_config = configs)
+st.dataframe(display_playlist, width = 1000, height = 37*display_playlist.shape[0], hide_index=True, column_config = configs)
