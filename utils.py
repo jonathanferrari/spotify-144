@@ -28,9 +28,15 @@ def get_most_similar_tracks(track_name, artist, n=7500, exp_name="test_10"):
     similarities = similarities.reshape(-1)
     most_similar_idxs = np.argpartition(similarities, -(n+1))[-(n+1):]
     most_similar_idxs = most_similar_idxs[np.argsort(similarities[most_similar_idxs])][::-1][1:]
-    uris = [tokenizer.index_word[idx] for idx in most_similar_idxs]
+    uris = []
+    similar = []
+    for idx in most_similar_idxs:
+        try:
+            uris.append(tokenizer.index_word[idx])
+            similar.append(similarities[idx])
+        except:
+            continue
     df["uri"] = df["uri"].str.lower()
-    similarities = similarities[most_similar_idxs]
     df = df.set_index("uri").loc[uris]
-    df["similarity"] = similarities
+    df["similarity"] = similar
     return df

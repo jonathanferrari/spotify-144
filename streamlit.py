@@ -12,13 +12,12 @@ st.title('An App to Create Playlists')
 data = pd.read_csv("part_1/new_song2vec/raw_data/spotify_playlists.tsv", sep="\t")
 songs = data["track_name"].unique()
 
-
-
 song_name = st.selectbox("Select a song", songs)
 
 is_unique = utils.is_unique_song_name(data, song_name)
 if is_unique:
-    artist = data[data["track_name"] == song_name]["artist_name"][0]
+    artist = data[data["track_name"] == song_name]["artist_name"].iloc[0]
+    st.write(f"Artist: {artist}")
 else:
     possible_artists = data[data["track_name"] == song_name]["artist_name"].unique()
     artist = st.selectbox("Select an artist", possible_artists)
@@ -110,4 +109,4 @@ if time_filter_bool:
     playlist = empty_playlist
 
 display_playlist = playlist.reset_index(drop=True)[["track_name", "artist_name", "similarity"]]
-st.dataframe(display_playlist, width = 1000, height = 1000)
+st.dataframe(display_playlist, width = 1000)
